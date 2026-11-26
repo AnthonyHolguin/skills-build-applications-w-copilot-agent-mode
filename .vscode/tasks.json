@@ -1,0 +1,56 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "OctoFit API (port 8000)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev",
+				"--prefix",
+				"octofit-tracker/backend"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "OctoFit data contract tests",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:data",
+				"--prefix",
+				"octofit-tracker/backend"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "OctoFit API contract tests",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:api",
+				"--prefix",
+				"octofit-tracker/backend"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "OctoFit frontend tests",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"test",
+				"--prefix",
+				"octofit-tracker/frontend"
+			],
+			"group": "test",
+			"problemMatcher": []
+		}
+	]
+}
