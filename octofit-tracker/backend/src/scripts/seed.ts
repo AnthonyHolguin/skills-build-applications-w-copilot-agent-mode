@@ -1,6 +1,21 @@
 import { connectDatabase, disconnectDatabase } from '../config/database.js';
 import { Activity, Team, User, Workout } from '../models/index.js';
 
+const DEMO_TEAMS = {
+  octocats: { name: 'Octocats', mascot: 'Mona' },
+  robocats: { name: 'Robocats', mascot: 'Hubot' },
+} as const;
+
+const DEMO_USERS = {
+  mona: { name: 'Mona', email: 'mona@example.com', fitnessGoal: 'endurance' },
+  hubot: { name: 'Hubot', email: 'hubot@example.com', fitnessGoal: 'strength' },
+} as const;
+
+const DEMO_WORKOUTS = {
+  intervals: { title: 'Intervals', focus: 'endurance', minutes: 30, difficulty: 'moderate' },
+  strength: { title: 'Strength Circuit', focus: 'strength', minutes: 30, difficulty: 'moderate' },
+} as const;
+
 // Seed stable demo records without clearing data owned by the application.
 async function upsertDemoUser(name: string, email: string, teamId: InstanceType<typeof Team>['_id'], fitnessGoal: string) {
   const previousUser = await User.findOne({ email }).select('_id team');
@@ -20,17 +35,17 @@ export async function seed() {
   await connectDatabase();
   try {
     const octocats = await Team.findOneAndUpdate(
-      { name: 'Octocats' },
-      { $set: { name: 'Octocats', mascot: 'Mona' } },
+      { name: DEMO_TEAMS.octocats.name },
+      { $set: DEMO_TEAMS.octocats },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     );
     const robocats = await Team.findOneAndUpdate(
-      { name: 'Robocats' },
-      { $set: { name: 'Robocats', mascot: 'Hubot' } },
+      { name: DEMO_TEAMS.robocats.name },
+      { $set: DEMO_TEAMS.robocats },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     );
-    const mona = await upsertDemoUser('Mona', 'mona@example.com', octocats._id, 'endurance');
-    const hubot = await upsertDemoUser('Hubot', 'hubot@example.com', robocats._id, 'strength');
+    const mona = await upsertDemoUser(DEMO_USERS.mona.name, DEMO_USERS.mona.email, octocats._id, DEMO_USERS.mona.fitnessGoal);
+    const hubot = await upsertDemoUser(DEMO_USERS.hubot.name, DEMO_USERS.hubot.email, robocats._id, DEMO_USERS.hubot.fitnessGoal);
 
     const monaRunAt = new Date('2026-01-10T12:00:00.000Z');
     const hubotCycleAt = new Date('2026-01-11T12:00:00.000Z');
@@ -45,13 +60,13 @@ export async function seed() {
       { upsert: true },
     );
     await Workout.updateOne(
-      { title: 'Intervals' },
-      { $set: { title: 'Intervals', focus: 'endurance', minutes: 30, difficulty: 'moderate' } },
+      { title: DEMO_WORKOUTS.intervals.title },
+      { $set: DEMO_WORKOUTS.intervals },
       { upsert: true },
     );
     await Workout.updateOne(
-      { title: 'Strength Circuit' },
-      { $set: { title: 'Strength Circuit', focus: 'strength', minutes: 30, difficulty: 'moderate' } },
+      { title: DEMO_WORKOUTS.strength.title },
+      { $set: DEMO_WORKOUTS.strength },
       { upsert: true },
     );
   } finally {
